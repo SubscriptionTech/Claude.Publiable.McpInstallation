@@ -39,4 +39,4 @@ The only exception is **localized content files** (e.g. user-facing copy transla
 
 Read the following files for context before answering questions about this project:
 
-<!-- populated by pa-shared-add -->
+- shared/ProAbonoLive/CLAUDE.md
