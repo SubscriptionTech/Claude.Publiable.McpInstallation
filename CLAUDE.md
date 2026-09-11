@@ -1,7 +1,7 @@
-# Mcp Installer
+# Mcp Installation
 
 **Scope:** Publiable
-**Description:** Install & configure ProAbono in your website with ProAbono MCP installer.
+**Description:** Install & configure ProAbono in your website with ProAbono MCP installation.
 **Stack:** [Stack]
 
 ## How Claude interacts with the User
