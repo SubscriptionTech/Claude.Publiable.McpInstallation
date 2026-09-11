@@ -1,7 +1,7 @@
-# [Project Name]
+# Mcp Installer
 
-**Scope:** [Scope]
-**Description:** [Short description]
+**Scope:** Publiable
+**Description:** Install & configure ProAbono in your website with ProAbono MCP installer.
 **Stack:** [Stack]
 
 ## How Claude interacts with the User
