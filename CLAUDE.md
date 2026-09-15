@@ -2,7 +2,16 @@
 
 **Scope:** Publiable
 **Description:** Install & configure ProAbono in your website with ProAbono MCP installation.
-**Stack:** [Stack]
+**Stack:** Node.js / TypeScript — stdio MCP server, distributed on npm and run via `npx`
+
+## Sources of truth
+
+Only two sources are authoritative when building or changing the MCP server. Read them before writing code, and never infer ProAbono behaviour from memory, from the web, or from older specs.
+
+1. `shared/ProAbonoLive/open-api/` — the ProAbono Live API contract (`pa-live-openapi-3.0.3.yaml` and its `instructions.md`). Authoritative for endpoints, parameters, payloads, response shapes and authentication.
+2. `specs/mcp-installation-docs/` — the ProAbono installation documentation. Authoritative for the installation procedure, integration workflows and the guidance the MCP exposes to developers.
+
+If the two disagree, or if something needed is in neither, ask the user instead of guessing.
 
 ## How Claude interacts with the User
 
@@ -13,6 +22,40 @@ When the user asks for a proposal or proposition, Claude must **not** perform th
 ### Lists requiring validation
 
 When producing a list that the user needs to review and validate — such as a list of detected issues, proposed phases, or items to approve — always use sequential numbers (1, 2, 3…). This makes it easy to refer to a specific item by number. Never use hybrid schemes like 1, 2a, 2b, 3. When an item is inserted or removed, renumber the entire list to keep numbering simple and gapless.
+
+### When Claude makes a complex answer
+
+When an answer contains more than the summary of the actions performed — for example decisions to settle, open points, or things the user should be aware of (list not exhaustive) — all of those points must be gathered at the very end of the answer, in a single zone introduced by its own heading (a Markdown heading or a bold line) reading **For you to check**, so the user cannot miss them.
+
+That zone is the only one carrying a heading: the rest of the answer keeps its usual form, with no heading of its own.
+
+Every numbered point of such an answer must carry a prefix, written in bold so it stands out in the flow of the text, so that two lists never share the same numbering:
+
+**done-1**, **done-2**… — a task Claude has done.
+**user-1**, **user-2**… — a point the user needs to check, decide, or be aware of.
+
+Never number two lists 1, 2, 3… in the same answer: a reference like **done-2** or **user-3** must always designate exactly one point.
+
+### When the user asks for a TODO list
+
+A TODO list is a file, written at the root of the project and named todo-<name>.md, where <name> is inferred from what the answer is about — kebab-case, 30 characters at most. Asking for a TODO list is asking for that file: Claude writes it and performs none of the points it holds.
+
+The file carries the whole explanation of the answer Claude has just given, rewritten to be **self-contained**. A later session reads the file alone, without the conversation that produced it, so every term, entity, spec section, source and finding the answer relied on is named in the file itself. A reference to "the previous point", "the rule discussed above" or "what you asked" is a defect: the file is context-less by construction.
+
+Each **user-x** point of that answer that calls for a decision from the user, or that states a major change, becomes a section of the file titled todo-x — see [When Claude makes a complex answer](#when-claude-makes-a-complex-answer) for where those points come from. The sections are numbered in the order of the answer, from todo-1, and each one states the point, what depends on it, and the options when there are some. A **user-x** point that is only something to be aware of, with nothing to settle, stays in the explanation and takes no section of its own.
+
+### When the user asks to process a TODO list
+
+Which todo-<name>.md file is meant is inferred from the request and from what the root folder holds. When more than one fits, ask the user before reading anything.
+
+Processing runs one point at a time:
+
+1. Write the context the file holds into the conversation, so the user has the whole picture before deciding anything.
+2. Ask the first todo-x section that is not struck through, and that one alone. Never present the remaining sections at the same time.
+3. Once the point is settled — the user has decided, and what the decision calls for is done — strike through the text of that section in the file, its heading included.
+4. Move to the first section that is still not struck through, and repeat from point 2.
+
+Striking a section as it is settled is what makes a TODO list resumable: a session can stop between any two points, and the next one starts at the first section that is not struck through. The file is deleted once every section is struck.
 
 ### Working with specs
 
