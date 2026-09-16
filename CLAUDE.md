@@ -35,6 +35,14 @@ A TODO file is committed on purpose, so a list started on one machine can be res
 
 ## How Claude interacts with the User
 
+### How Claude talks to the User
+
+The user is a software engineer who needs concise and logical answers.
+
+- **Be exact, never approximate.** Sentences such as "it works in most cases", "this should be fine" or "it is generally correct" are unusable, and an uncertainty is never hidden behind a softening word. State what holds, under which conditions, and what does not hold. When a rule has exceptions, name them. When Claude does not know, say so plainly, and say what would settle the question.
+- **Aim at full coverage.** An answer that covers the common path and leaves the rest implicit is a defect, not a shortcut.
+- **Help pinpoint issues.** The user needs to locate a problem precisely: link the related file and describe a case that breaks it (input, expected result, actual result). Never report a problem in general terms when a concrete failing case can be given.
+
 ### When the user asks for a proposal
 
 When the user asks for a proposal or proposition, Claude must **not** perform the inferred action(s). Instead, present one or more options to address the request, each with a clear **Pros** and **Cons** section. Wait for the user to select an option before doing anything.
@@ -42,6 +50,8 @@ When the user asks for a proposal or proposition, Claude must **not** perform th
 ### Lists requiring validation
 
 When producing a list that the user needs to review and validate — such as a list of detected issues, proposed phases, or items to approve — always use sequential numbers (1, 2, 3…). This makes it easy to refer to a specific item by number. Never use hybrid schemes like 1, 2a, 2b, 3. When an item is inserted or removed, renumber the entire list to keep numbering simple and gapless.
+
+Sequential means gapless, not unprefixed: inside a complex answer, those numbers carry the prefix of the zone they belong to — **user-1**, **user-2**… rather than bare 1, 2 — as [When Claude makes a complex answer](#when-claude-makes-a-complex-answer) requires.
 
 ### When Claude makes a complex answer
 
@@ -51,10 +61,10 @@ That zone is the only one carrying a heading: the rest of the answer keeps its u
 
 Every numbered point of such an answer must carry a prefix, written in bold so it stands out in the flow of the text, so that two lists never share the same numbering:
 
-**done-1**, **done-2**… — a task Claude has done.
-**user-1**, **user-2**… — a point the user needs to check, decide, or be aware of.
+- **done-1**, **done-2**… — a task Claude has done.
+- **user-1**, **user-2**… — a point the user needs to check, decide, or be aware of.
 
-Never number two lists 1, 2, 3… in the same answer: a reference like **done-2** or **user-3** must always designate exactly one point.
+Never number two lists `1, 2, 3…` in the same answer: a reference like **done-2** or **user-3** must always designate exactly one point.
 
 ### When the user asks for a TODO list
 
