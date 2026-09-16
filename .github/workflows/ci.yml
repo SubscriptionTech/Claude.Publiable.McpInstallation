@@ -1,0 +1,37 @@
+# Install, build, type-check and test on every push and pull request.
+#
+# A red build blocks a release (publication plan, Phase C). The live lane of the test suite is
+# skipped here: it needs the fixture account's credentials, which are not available to a pull
+# request from a fork.
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        # The versions `engines` claims support for. Adding one here is what allows lowering it.
+        node: ["20.x", "22.x", "24.x"]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # The API contract is vendored into the build from this submodule.
+          submodules: true
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+          cache: npm
+
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run build
+      - run: npm test

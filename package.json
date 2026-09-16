@@ -2,7 +2,7 @@
   "name": "proabono-mcp-installation",
   "version": "0.0.0",
   "private": true,
-  "description": "Local MCP server that installs ProAbono into a website, from the developer's IDE.",
+  "description": "Local MCP server that installs ProAbono into a website, from the developer IDE: hosted pages, catalogue introspection, customers and subscriptions.",
   "type": "module",
   "main": "dist/index.js",
   "bin": {
@@ -12,15 +12,38 @@
     "node": ">=20"
   },
   "scripts": {
-    "build": "tsc -p tsconfig.json",
+    "build": "tsc -p tsconfig.json && node scripts/vendor-resources.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "start": "node dist/index.js"
+    "start": "node dist/index.js",
+    "test": "tsc -p tsconfig.test.json && node scripts/vendor-resources.mjs build-test/src/resources && node --test \"build-test/tests/*.test.js\"",
+    "prepublishOnly": "npm run build && npm test"
   },
   "dependencies": {
-    "@modelcontextprotocol/sdk": "^1.30.0"
+    "@modelcontextprotocol/sdk": "^1.30.0",
+    "zod": "^4.6.5"
   },
   "devDependencies": {
     "@types/node": "^24.0.0",
-    "typescript": "^5.7.0"
-  }
+    "typescript": "^5.7.0",
+    "yaml": "^2.9.1"
+  },
+  "keywords": [
+    "mcp",
+    "modelcontextprotocol",
+    "proabono",
+    "billing",
+    "subscription",
+    "saas"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SubscriptionTech/Claude.Publiable.McpInstallation.git"
+  },
+  "homepage": "https://github.com/SubscriptionTech/Claude.Publiable.McpInstallation#readme",
+  "bugs": {
+    "url": "https://github.com/SubscriptionTech/Claude.Publiable.McpInstallation/issues"
+  },
+  "files": [
+    "dist"
+  ]
 }

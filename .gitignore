@@ -12,3 +12,4 @@ Thumbs.db
 *.local
 node_modules/
 dist/
+build-test/
