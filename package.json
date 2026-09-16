@@ -1,0 +1,26 @@
+{
+  "name": "proabono-mcp-installation",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Local MCP server that installs ProAbono into a website, from the developer's IDE.",
+  "type": "module",
+  "main": "dist/index.js",
+  "bin": {
+    "proabono-mcp-installation": "dist/index.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.30.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.7.0"
+  }
+}
