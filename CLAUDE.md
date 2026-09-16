@@ -66,27 +66,6 @@ Every numbered point of such an answer must carry a prefix, written in bold so i
 
 Never number two lists `1, 2, 3…` in the same answer: a reference like **done-2** or **user-3** must always designate exactly one point.
 
-### When the user asks for a TODO list
-
-A TODO list is a file, written at the root of the project and named todo-<name>.md, where <name> is inferred from what the answer is about — kebab-case, 30 characters at most. Asking for a TODO list is asking for that file: Claude writes it and performs none of the points it holds.
-
-The file carries the whole explanation of the answer Claude has just given, rewritten to be **self-contained**. A later session reads the file alone, without the conversation that produced it, so every term, entity, spec section, source and finding the answer relied on is named in the file itself. A reference to "the previous point", "the rule discussed above" or "what you asked" is a defect: the file is context-less by construction.
-
-Each **user-x** point of that answer that calls for a decision from the user, or that states a major change, becomes a section of the file titled todo-x — see [When Claude makes a complex answer](#when-claude-makes-a-complex-answer) for where those points come from. The sections are numbered in the order of the answer, from todo-1, and each one states the point, what depends on it, and the options when there are some. A **user-x** point that is only something to be aware of, with nothing to settle, stays in the explanation and takes no section of its own.
-
-### When the user asks to process a TODO list
-
-Which todo-<name>.md file is meant is inferred from the request and from what the root folder holds. When more than one fits, ask the user before reading anything.
-
-Processing runs one point at a time:
-
-1. Write the context the file holds into the conversation, so the user has the whole picture before deciding anything.
-2. Ask the first todo-x section that is not struck through, and that one alone. Never present the remaining sections at the same time.
-3. Once the point is settled — the user has decided, and what the decision calls for is done — strike through the text of that section in the file, its heading included.
-4. Move to the first section that is still not struck through, and repeat from point 2.
-
-Striking a section as it is settled is what makes a TODO list resumable: a session can stop between any two points, and the next one starts at the first section that is not struck through. The file is deleted once every section is struck.
-
 ### Specs
 
 - **Local specs** are the specs located in the root `specs/` folder of this project.
