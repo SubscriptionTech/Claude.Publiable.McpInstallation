@@ -4,6 +4,10 @@
 **Description:** Install & configure ProAbono in your website with ProAbono MCP installation.
 **Stack:** Node.js / TypeScript — stdio MCP server, distributed on npm and run via `npx`
 
+## Memory
+
+`.claude/memory/MEMORY.md` holds the rules for this project. Read that index at the start of a session, and a memory file when its line looks relevant to the task.
+
 ## Sources of truth
 
 Only two sources are authoritative when building or changing the MCP server. Read them before writing code, and never infer ProAbono behaviour from memory, from the web, or from older specs.
