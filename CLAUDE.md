@@ -29,7 +29,7 @@ Deferred features and improvements live in `specs/backlog/` in the internal spec
 
 ### Todo files
 
-A TODO file is a `todo-<name>.md` file at the root of the project, written by the `/add-todo` command and deleted once all of its sections are struck through. Never write an explicit reference to a TODO file — its name, its path, or a link to it — in any other file, whatever that file is: `CLAUDE.md`, a spec, a README, a source file, a command or skill file. A TODO file is referenced from the conversation only, so that deleting it never leaves a dangling reference behind.
+A TODO file is a `todo-<name>.md` file at the root of the project, written by the `pa-todo-create` command and deleted once all of its sections are struck through. Never write an explicit reference to a TODO file — its name, its path, or a link to it — in any other file, whatever that file is: `CLAUDE.md`, a spec, a README, a source file, a command or skill file. A TODO file is referenced from the conversation only, so that deleting it never leaves a dangling reference behind.
 
 A TODO file is committed on purpose, so a list started on one machine can be resumed on another.
 
