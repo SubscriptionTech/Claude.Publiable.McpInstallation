@@ -26,7 +26,10 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
+        with:
+          submodules: false
+          lfs: false
+          
       - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node }}
