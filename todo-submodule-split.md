@@ -116,52 +116,82 @@ Two things the run surfaced, neither blocking:
 
 ---
 
-## todo-3 — Publish to the MCP Registry
+## ~~todo-3 — Publish to the MCP Registry~~
 
-The MCP Registry verifies that the published npm package carries an `mcpName` matching the server
-name, so **npm must be published first**: this runs after `todo-2` has succeeded, never before.
+~~The MCP Registry verifies that the published npm package carries an `mcpName` matching the server~~
+~~name, so **npm must be published first**: this runs after `todo-2` has succeeded, never before.~~
 
-It stays manual and local. The `com.proabono` namespace is **domain**-authenticated — a DNS TXT
-record on the apex — not GitHub-authenticated, and the Ed25519 private key it needs does not belong in
-a secret of a public repository. Changing the repository does not affect the right to publish.
+~~It stays manual and local. The `com.proabono` namespace is **domain**-authenticated — a DNS TXT~~
+~~record on the apex — not GitHub-authenticated, and the Ed25519 private key it needs does not belong in~~
+~~a secret of a public repository. Changing the repository does not affect the right to publish.~~
 
-From the machine holding the key, in the submodule folder:
+~~From the machine holding the key, in the submodule folder:~~
 
-```bash
-mcp-publisher login dns --domain proabono.com --private-key <key>
-mcp-publisher publish
-```
+~~`mcp-publisher login dns --domain proabono.com --private-key <key>` then `mcp-publisher publish`~~
 
-Two failure modes worth knowing before starting:
+~~Two failure modes worth knowing before starting:~~
 
-1. The TXT record must sit on the **apex** `proabono.com`, not under a selector.
-2. Any stale record left from a key rotation must be removed — a leftover record is tried first and
-   fails with a generic signature error that does not say which record was used.
+~~1. The TXT record must sit on the **apex** `proabono.com`, not under a selector.~~
+~~2. Any stale record left from a key rotation must be removed — a leftover record is tried first and~~
+~~fails with a generic signature error that does not say which record was used.~~
+
+**Settled 2026-09-18.** `mcp-publisher 1.8.1` reported `✓ Successfully published` /
+`✓ Server com.proabono/mcp-installation version 0.1.0`.
+
+**Two things that cost an hour, recorded so the next rotation does not repeat them:**
+
+1. **`--private-key` takes the key in hex, not base64.** The tool's own help says `Private key (hex)`;
+   the documented example line `--private-key <key>` does not. Passing the base64 form fails with
+   `Error: invalid hex private key format: encoding/hex: invalid byte: U+004D 'M'` — `M` is simply not
+   a hex digit.
+2. **The key is stored as a PKCS8 PEM** at `C:\Users\sebas\.proabono\mcp-registry\key.pem` on the
+   publishing machine. This converts it and logs in without the key ever reaching the terminal:
+
+   `mcp-publisher login dns --domain proabono.com --private-key "$(node -e 'const c=require("crypto"),fs=require("fs");process.stdout.write(c.createPrivateKey(fs.readFileSync("<path-to>/key.pem")).export({format:"der",type:"pkcs8"}).subarray(-32).toString("hex"))')"`
+
+Neither failure mode the section warned about occurred: the apex `proabono.com` carries exactly one
+`v=MCPv1; k=ed25519; p=s8Q3jYzTLX2RPqBgpMppOmdKOsZl2zPbOvB+TIPFiCE=` record, and no stale duplicate.
 
 ---
 
-## todo-4 — Verify, then clean up
+## ~~todo-4 — Verify, then clean up~~
 
-Once `todo-2` and `todo-3` are done, check all three surfaces name the new repository:
+~~Once `todo-2` and `todo-3` are done, check all three surfaces name the new repository:~~
 
-```bash
-npm view @proabono/mcp-installation repository.url
-curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=com.proabono"
-```
+~~`npm view @proabono/mcp-installation repository.url` and~~
+~~`curl -s "https://registry.modelcontextprotocol.io/v0/servers?search=com.proabono"`~~
 
-- `npm view` must return `git+https://github.com/SubscriptionTech/ProAbono.Mcp.Installation.git`.
-- The npmjs page must show **both** the Repository link and a **Provenance** panel naming the new
-  repository. If the panel is absent the publish succeeded without an attestation, which means
-  `id-token: write` did not apply — that is a defect to fix before the next release, not something
-  `0.1.0` can be repaired for.
-- The registry response must show `0.1.0` with the new URL and the id `1376081941`, and
-  `isLatest: true`.
+~~- `npm view` must return `git+https://github.com/SubscriptionTech/ProAbono.Mcp.Installation.git`.~~
+~~- The npmjs page must show **both** the Repository link and a **Provenance** panel naming the new~~
+~~repository. If the panel is absent the publish succeeded without an attestation, which means~~
+~~`id-token: write` did not apply — that is a defect to fix before the next release, not something~~
+~~`0.1.0` can be repaired for.~~
+~~- The registry response must show `0.1.0` with the new URL and the id `1376081941`, and~~
+~~`isLatest: true`.~~
 
-Then:
+~~Then:~~
 
-- Bump the parent's submodule pointer to whatever the release commit ended up being, and commit it.
-- Delete `plan-submodule-split.md` at the parent root — it exists only until this verification passes.
-- Delete this file.
+~~- Bump the parent's submodule pointer to whatever the release commit ended up being, and commit it.~~
+~~- Delete `plan-submodule-split.md` at the parent root — it exists only until this verification passes.~~
+~~- Delete this file.~~
+
+**Settled 2026-09-18.** All three surfaces verified:
+
+- **npm** — `dist-tags.latest` is `0.1.0`; its `repository.url` is
+  `git+https://github.com/SubscriptionTech/ProAbono.Mcp.Installation.git`, and its `mcpName` is
+  `com.proabono/mcp-installation`.
+- **Provenance** — `dist.attestations` is present on `0.1.0`, predicate type
+  `https://slsa.dev/provenance/v1`, and the published `shasum a9d72c10…` matches the tarball the
+  release run uploaded. The attestation exists in the registry metadata, which is what the npmjs
+  Provenance panel renders.
+- **MCP Registry** — `0.1.0`, url `…/ProAbono.Mcp.Installation`, id `1376081941`, package version
+  `0.1.0`, `isLatest: true`. `0.0.1` is still served, unchanged, with the old URL and `isLatest:
+  false` — as expected: a published version's metadata is frozen.
+
+The parent's submodule pointer needed no bump: it already pointed at `054e66e`, which is exactly what
+`v0.1.0` tags. `plan-submodule-split.md` was deleted.
+
+This file is deleted once `todo-5`, `todo-6` and `todo-7` are settled too.
 
 ---
 
