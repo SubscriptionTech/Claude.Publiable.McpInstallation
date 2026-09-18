@@ -1,131 +1,43 @@
-# ProAbono MCP Installation
+# ProAbono MCP Installation — workspace
 
-A local [MCP](https://modelcontextprotocol.io) server that installs ProAbono into your site, from your IDE.
+**The source of the published package now lives in
+[SubscriptionTech/ProAbono.Mcp.Installation](https://github.com/SubscriptionTech/ProAbono.Mcp.Installation).**
+Everything `@proabono/mcp-installation` is built from — the server, the tests, the build scripts, the
+ProAbono API contract and the documentation corpus — moved there, and is attached here as a Git
+submodule of the same name.
 
-It gives your coding assistant the ProAbono documentation, the Live API and *your own* ProAbono configuration, so it can answer API questions, generate integration code already filled in with your real business identifier and segment, read your account back to check the result, and create test data.
+If you arrived from the npm page of version `0.0.1`, that link points here because a published npm
+version's metadata is frozen. Follow the repository above; it is the same code, with its history.
 
-It runs locally, over stdio, against whatever account your key opens. It has no environment concept of its own: your credentials are the only boundary.
+- **Package**: [`@proabono/mcp-installation`](https://www.npmjs.com/package/@proabono/mcp-installation)
+- **MCP Registry**: `com.proabono/mcp-installation`
+- **Install and configure**: see the
+  [README of the submodule](https://github.com/SubscriptionTech/ProAbono.Mcp.Installation#readme)
 
-## Early version
+## What this repository is
 
-**0.0.1 is a first release.** What it does today:
+The workspace around the package: the Claude Code rules (`CLAUDE.md`), the project memory
+(`.claude/memory/`), the private notes (`notes/`), and the submodule pointer. It ships nothing and
+builds nothing.
 
-- **Step 1 — Customer Portal**: generates the in-site embed, security hash included.
-- **Catalogue and account introspection**: offers, features, customers, subscriptions, usage.
-- **Customer and subscription writes**: create and update customers, billing addresses, subscriptions.
-- **Documentation and API reference**: natural-language search over the ProAbono corpus and the Live OpenAPI contract.
+The build, the test suite and both publications — npm and the MCP Registry — all run **inside**
+`ProAbono.Mcp.Installation/`, never here.
 
-Not in this version, and planned: **Step 2 — Subscription Workflow** code generation, **Step 3 — Usage API** rights synchronization, the notification-endpoint scaffold, the `install_insite` orchestrator, installation-state tracking, and end-to-end installation verification.
-
-Widget and plug-in installations (WordPress and similar) are out of scope by design: this server installs ProAbono **in-site, by code**.
-
-## Install
-
-### Claude Code
-
-```bash
-claude mcp add --transport stdio proabono --scope user -- npx -y @proabono/mcp-installation
-```
-
-### VS Code
-
-In `.vscode/mcp.json`:
-
-```json
-{
-  "servers": {
-    "proabono": {
-      "type": "stdio",
-      "command": "npx",
-      "args": ["-y", "@proabono/mcp-installation"]
-    }
-  }
-}
-```
-
-### Cursor
-
-In `.cursor/mcp.json` (or `~/.cursor/mcp.json` for every project):
-
-```json
-{
-  "mcpServers": {
-    "proabono": {
-      "command": "npx",
-      "args": ["-y", "@proabono/mcp-installation"]
-    }
-  }
-}
-```
-
-Requires Node.js 20 or later.
-
-## Configuration
-
-The server reads seven environment variables and nothing else. It refuses to start if any is missing, naming the ones it needs.
-
-| Variable | Holds |
-|---|---|
-| `PROABONO_API_BASE` | The API endpoint, `https://api-{business_id}.proabono.com` |
-| `PROABONO_BUSINESS_ID` | Your numeric business identifier |
-| `PROABONO_SEGMENT_REF` | The Segment your customers and offers belong to |
-| `PROABONO_AGENT_KEY` | Basic auth username |
-| `PROABONO_API_KEY` | Basic auth password |
-| `PROABONO_PORTAL_SECRET` | HMAC key for the portal security hash |
-| `PROABONO_WEBHOOK_SECRET` | Secret for the notification signature |
-
-All seven are in your ProAbono BackOffice. Set them in the environment that launches your MCP client — your shell profile, or your OS user environment.
-
-**Do not put them in a configuration file you commit.** Claude Code's `.mcp.json` expands `${PROABONO_API_KEY}`, and VS Code's `mcp.json` can prompt for them through its `inputs` section; both keep the values out of the file. Cursor supports neither, so on Cursor let the server inherit them from your environment rather than writing them into `env`.
-
-No value you supply is ever logged, returned by a tool, put in an error message, or inlined into generated code. Generated code references the variable names.
-
-## Tools
-
-**Documentation**
-- `search_documentation` — natural-language search across the ProAbono documentation and the Live OpenAPI contract.
-- `get_api_reference` — parameters and schema for a given endpoint or object.
-
-**Catalogue and account**
-- `list_offers`, `get_offer` — the offers your segment exposes.
-- `list_features` — the features of your business.
-- `get_customer` — a customer by reference.
-- `list_subscriptions` — a customer's subscriptions.
-- `get_usages` — a customer's rights and consumption.
-
-**Customers and subscriptions**
-- `create_customer`, `update_customer` — create and update a customer in your segment.
-- `update_billing_address` — set a customer's billing address.
-- `create_subscription` — subscribe a customer to an offer.
-- `change_subscription` — upgrade, downgrade or terminate.
-
-**Hosted pages**
-- `install_customer_portal` — the Step 1 in-site embed, with the security hash, for your stack.
-- `generate_pricing_table` — a pricing table over your real offers.
-
-**Server**
-- `get_server_info` — version and configuration status, values excluded.
-
-No tool in this server destroys or anonymizes anything. ProAbono's anonymization, invalidation, suspension and link-revocation endpoints exist and are deliberately not exposed, in any account.
-
-## Building from source
-
-The published package is self-contained: the ProAbono API contract and documentation are copied into `dist/resources/` at build time, so nothing is fetched at run time.
-
-A clone builds the same way, with no credential and no access to anything of ours:
+## Working on it
 
 ```bash
-npm ci && npm run build && npm test
+git clone --recurse-submodules https://github.com/SubscriptionTech/Claude.Publiable.McpInstallation.git
+cd Claude.Publiable.McpInstallation/ProAbono.Mcp.Installation
+npm ci && npm run typecheck && npm run build && npm test
 ```
 
-Both sources the build vendors live in this repository, under `resources/`: the API contract in `resources/open-api/` and the documentation corpus in `resources/docs/`. The contract is a copy of the one ProAbono maintains internally, refreshed by hand — see `resources/open-api/index.md`.
+On a clone that already exists, `git submodule update --init --recursive` fills the folder. The
+submodule tracks `main`, so `git submodule update --remote` moves it forward; the new pointer is then
+committed here like any other change.
 
-## Support
-
-Issues and questions: [mcp@proabono.com](mailto:mcp@proabono.com).
-
-When reporting a problem, include the output of `get_server_info` — it reports the server version and which variables are configured, and never their values.
+A commit made inside the submodule belongs to the submodule's repository: push it there first, then
+commit the moved pointer here.
 
 ## Licence
 
-MIT. See [LICENSE](LICENSE).
+MIT. See [LICENSE](LICENSE) — the same licence the package carries.

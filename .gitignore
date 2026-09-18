@@ -1,3 +1,6 @@
+# This repository builds nothing: the build artefacts are ignored inside the submodule, by the
+# submodule's own .gitignore. Only what an OS or an editor drops here is listed.
+
 # OS
 .DS_Store
 Thumbs.db
@@ -8,11 +11,6 @@ Thumbs.db
 *.code-workspace
 
 # Environment
+# Kept although nothing here reads one: an .env dropped at this root would otherwise be committable.
 .env
 *.local
-node_modules/
-dist/
-build-test/
-
-# Packaging
-*.tgz

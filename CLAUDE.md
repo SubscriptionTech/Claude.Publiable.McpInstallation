@@ -4,6 +4,14 @@
 **Description:** Install & configure ProAbono in your website with ProAbono MCP installation.
 **Stack:** Node.js / TypeScript — stdio MCP server, distributed on npm and run via `npx`
 
+## Layout
+
+The published package lives in the `ProAbono.Mcp.Installation/` submodule — the server, the tests, the build scripts and the two resource folders. This repository is the workspace around it: these rules, the memory, the notes and the submodule pointer.
+
+**The build, the test suite and both publications — npm and the MCP Registry — all run inside `ProAbono.Mcp.Installation/`, never at this root.** A code change is committed and pushed in the submodule's own repository first; the moved pointer is then committed here.
+
+The submodule carries its own `CLAUDE.md`, repeating the rules a session opened on that folder alone would otherwise not have. A rule that binds the code must be changed in both.
+
 ## Memory
 
 `.claude/memory/MEMORY.md` holds the rules for this project. Read that index at the start of a session, and a memory file when its line looks relevant to the task.
@@ -12,8 +20,8 @@
 
 Only two sources are authoritative when building or changing the MCP server. Read them before writing code, and never infer ProAbono behaviour from memory, from the web, or from older specs.
 
-1. `resources/open-api/` — the ProAbono API Live contract (`pa-live-openapi-3.0.3.yaml`). Authoritative for endpoints, parameters, payloads, response shapes and authentication. It is a copy of the contract maintained in the private `Claude.SharedApi.ProAbonoLive` repository, refreshed by hand and never edited here — see [resources/open-api/index.md](resources/open-api/index.md).
-2. `resources/docs/` — the ProAbono installation documentation. Authoritative for the installation procedure, integration workflows and the guidance the MCP exposes to developers.
+1. `ProAbono.Mcp.Installation/resources/open-api/` — the ProAbono API Live contract (`pa-live-openapi-3.0.3.yaml`). Authoritative for endpoints, parameters, payloads, response shapes and authentication. It is a copy of the contract maintained in the private `Claude.SharedApi.ProAbonoLive` repository, refreshed by hand and never edited here — see [ProAbono.Mcp.Installation/resources/open-api/index.md](ProAbono.Mcp.Installation/resources/open-api/index.md).
+2. `ProAbono.Mcp.Installation/resources/docs/` — the ProAbono installation documentation. Authoritative for the installation procedure, integration workflows and the guidance the MCP exposes to developers.
 
 If the two disagree, or if something needed is in neither, ask the user instead of guessing.
 
@@ -70,9 +78,9 @@ Never number two lists `1, 2, 3…` in the same answer: a reference like **done-
 
 **This repository holds no specification.** The product specs, the build plans and the backlog are private, in [Claude.Internal.McpInstallation](https://github.com/SubscriptionTech/Claude.Internal.McpInstallation). Read them there before changing what a tool does, what it is named, or what it returns — the spec is the source of truth about the product, and this repository is its implementation.
 
-What this repository does hold under `resources/` is not a spec: it is the two inputs the build vendors into `dist/resources/` — the ProAbono API Live contract and the installation documentation corpus. They are public because they ship inside the published package.
+What the submodule holds under `ProAbono.Mcp.Installation/resources/` is not a spec either: it is the two inputs the build vendors into `dist/resources/` — the ProAbono API Live contract and the installation documentation corpus. They are public because they ship inside the published package.
 
-This project has no shared utility attached: there is no `shared/` folder, and nothing outside this repository is needed to build it.
+This project has no shared utility attached: there is no `shared/` folder. `ProAbono.Mcp.Installation/` is a submodule but not a shared one — it belongs to this project alone, and the `pa-shared-*` commands do not apply to it. Nothing outside these two repositories is needed to build the package.
 
 ### Language
 

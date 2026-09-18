@@ -1,0 +1,4 @@
+[submodule "ProAbono.Mcp.Installation"]
+	path = ProAbono.Mcp.Installation
+	url = https://github.com/SubscriptionTech/ProAbono.Mcp.Installation.git
+	branch = main
