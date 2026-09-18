@@ -80,23 +80,39 @@ spent: fix the setting and re-run the failed job.
 
 ---
 
-## todo-2 — Push the `v0.1.0` tag
+## ~~todo-2 — Push the `v0.1.0` tag~~
 
-**This is the irreversible step.** The tag *is* the release trigger: pushing it starts
-`.github/workflows/release.yml`, which runs `npm ci`, `npm run typecheck`, `npm run build`,
-`npm test`, then `npm publish --provenance --access public`, and finally creates the GitHub release.
+~~**This is the irreversible step.** The tag *is* the release trigger: pushing it starts~~
+~~`.github/workflows/release.yml`, which runs `npm ci`, `npm run typecheck`, `npm run build`,~~
+~~`npm test`, then `npm publish --provenance --access public`, and finally creates the GitHub release.~~
 
-Only after `todo-1`, from the new repository:
+~~Only after `todo-1`, from the new repository:~~
 
-```bash
-git tag v0.1.0 && git push origin v0.1.0
-```
+~~`git tag v0.1.0 && git push origin v0.1.0`~~
 
-Decide who does it — it can be delegated to Claude once the secret is in place, or done by hand.
+~~Decide who does it — it can be delegated to Claude once the secret is in place, or done by hand.~~
 
-If the registry step (`todo-3`) later reports the package as missing, npm has simply not propagated
-yet: **retry, never re-tag.** A second tag for the same version cannot help, because the version
-number is already spent.
+~~If the registry step (`todo-3`) later reports the package as missing, npm has simply not propagated~~
+~~yet: **retry, never re-tag.** A second tag for the same version cannot help, because the version~~
+~~number is already spent.~~
+
+**Settled 2026-09-18.** `v0.1.0` tags commit `054e66e` and was pushed. Release run
+[35367810652](https://github.com/SubscriptionTech/ProAbono.Mcp.Installation/actions/runs/35367810652)
+succeeded on every step. npm accepted the tarball — `+ @proabono/mcp-installation@0.1.0`, 47 files,
+86.0 kB, shasum `a9d72c10e5285018b91d1b68cb01a309376cc7d8` — and the provenance statement was signed
+and written to the Sigstore transparency log at
+[logIndex 2886514833](https://search.sigstore.dev/?logIndex=2886514833). The GitHub release `v0.1.0`
+was created.
+
+**`0.1.0` is now spent.** Any further change needs a new version number.
+
+Two things the run surfaced, neither blocking:
+
+- npm warns that *"npm tokens that bypass 2FA are being restricted for account changes and direct
+  publishing"* — see <https://gh.io/npm-gat-bypass2fa-deprecation>. The token from `todo-1` works
+  today; this is the deprecation that will eventually force trusted publishing (OIDC) instead.
+- GitHub warns that `actions/checkout@v4` and `actions/setup-node@v4` target Node.js 20 and are being
+  forced onto Node.js 24 — which is exactly what `todo-6` fixes.
 
 ---
 
