@@ -17,7 +17,12 @@ import { registerIntrospectionTools } from "./tools/introspection.js";
 import { registerWriteTools } from "./tools/writes.js";
 
 export const SERVER_NAME = "proabono-mcp-installation";
-export const SERVER_VERSION = "0.1.0";
+/**
+ * Reported in the MCP handshake and by `get_server_info`, which is what a developer pastes into a
+ * bug report. It must equal `version` in `package.json` and both versions in `server.json`, or the
+ * server names a release that does not exist on npm; `tests/release.test.ts` fails when it drifts.
+ */
+export const SERVER_VERSION = "0.0.1";
 
 export function createServer(
   configuration: ProAbonoConfiguration,

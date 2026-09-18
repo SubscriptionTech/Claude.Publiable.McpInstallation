@@ -112,7 +112,13 @@ No tool in this server destroys or anonymizes anything. ProAbono's anonymization
 
 The published package is self-contained: the ProAbono API contract and documentation are copied into `dist/resources/` at build time, so nothing is fetched at run time.
 
-Building from a clone is another matter. `npm run build` vendors the API contract from `shared/ProAbonoLive`, a **private** ProAbono repository, so the build only completes inside ProAbono. A clone from outside will have an empty `shared/ProAbonoLive` and `npm run build` will fail on the missing contract. Read the sources, run the published package, open an issue by email — but expect the build itself not to reproduce.
+A clone builds the same way, with no credential and no access to anything of ours:
+
+```bash
+npm ci && npm run build && npm test
+```
+
+Both sources the build vendors live in this repository: the API contract in `specs/open-api/` and the documentation corpus in `specs/mcp-installation-docs/`. The contract is a copy of the one ProAbono maintains internally, refreshed by hand — see `specs/open-api/index.md`.
 
 ## Support
 

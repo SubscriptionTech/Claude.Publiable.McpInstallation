@@ -2,9 +2,14 @@
  * Vendors the two sources of truth into the build output.
  *
  * The published package ships `dist/` and nothing else (publication plan, Phase A), so the
- * OpenAPI contract and the installation documentation cannot be read from `specs/` or from the
- * `shared/` submodule at run time. They are copied into `dist/resources/` at build time instead:
- * the YAML contract as JSON, so the runtime needs no YAML parser, and the docs verbatim.
+ * OpenAPI contract and the installation documentation cannot be read from `specs/` at run time.
+ * They are copied into `dist/resources/` at build time instead: the YAML contract as JSON, so the
+ * runtime needs no YAML parser, and the docs verbatim.
+ *
+ * Both sources live in this repository. The contract is a copy of the one maintained in
+ * `SubscriptionTech/Claude.SharedApi.ProAbonoLive`, refreshed by hand -- see
+ * `specs/open-api/index.md`. Nothing in the build reaches outside this repository, so a clone
+ * builds anywhere, with no credential.
  */
 import { readFileSync, writeFileSync, mkdirSync, readdirSync } from "node:fs";
 import { dirname, join, resolve } from "node:path";
@@ -12,7 +17,7 @@ import { fileURLToPath } from "node:url";
 import { parse } from "yaml";
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), "..");
-const openApiSource = join(root, "shared/ProAbonoLive/open-api/pa-live-openapi-3.0.3.yaml");
+const openApiSource = join(root, "specs/open-api/pa-live-openapi-3.0.3.yaml");
 const docsSource = join(root, "specs/mcp-installation-docs");
 const target = resolve(root, process.argv[2] ?? "dist/resources");
 

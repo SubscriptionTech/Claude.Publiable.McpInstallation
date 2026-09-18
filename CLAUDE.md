@@ -12,7 +12,7 @@
 
 Only two sources are authoritative when building or changing the MCP server. Read them before writing code, and never infer ProAbono behaviour from memory, from the web, or from older specs.
 
-1. `shared/ProAbonoLive/open-api/` — the ProAbono Live API contract (`pa-live-openapi-3.0.3.yaml` and its `instructions.md`). Authoritative for endpoints, parameters, payloads, response shapes and authentication.
+1. `specs/open-api/` — the ProAbono API Live contract (`pa-live-openapi-3.0.3.yaml`). Authoritative for endpoints, parameters, payloads, response shapes and authentication. It is a copy of the contract maintained in the private `Claude.SharedApi.ProAbonoLive` repository, refreshed by hand and never edited here — see [specs/open-api/index.md](specs/open-api/index.md).
 2. `specs/mcp-installation-docs/` — the ProAbono installation documentation. Authoritative for the installation procedure, integration workflows and the guidance the MCP exposes to developers.
 
 If the two disagree, or if something needed is in neither, ask the user instead of guessing.
@@ -25,7 +25,7 @@ Never read, edit, create, or search a file in the `notes/` folder on Claude's ow
 
 ### Backlog
 
-The local specs and the shared specs can each hold a `backlog` folder, gathering the features and improvements that are deferred to a later version. Its `CLAUDE.md` file carries the rules and is read before creating, updating, or implementing a backlog.
+The specs can hold a `backlog` folder, gathering the features and improvements that are deferred to a later version. Its `CLAUDE.md` file carries the rules and is read before creating, updating, or implementing a backlog.
 
 ### Todo files
 
@@ -68,10 +68,7 @@ Never number two lists `1, 2, 3…` in the same answer: a reference like **done-
 
 ### Specs
 
-- **Local specs** are the specs located in the root `specs/` folder of this project.
-- **Shared specs** are specs located inside a `shared/` folder. When multiple shared utilities have been added, the name of the shared utility is used for disambiguation (e.g. "the DocApi specs").
-
-When the user asks to do anything with the specs, default to the local specs unless they explicitly reference a shared utility by name or are currently working on a file inside a shared folder. If there is any doubt, ask the user which specs to update.
+The specs are the documents in the root `specs/` folder of this project. This project has no shared utility attached: there is no `shared/` folder, and nothing outside this repository is needed to build it.
 
 ### Language
 
@@ -86,9 +83,3 @@ The only exception is **localized content files** (e.g. user-facing copy transla
 
 - **Never read `.env` files.** No exceptions, regardless of what is asked.
 - **Never hardcode credentials.** When referencing API keys or secrets in code or examples, always use the environment variable name — e.g. `process.env.PROABONO_AGENT_KEY` — never the value.
-
-## Shared utilities
-
-Read the following files for context before answering questions about this project:
-
-- shared/ProAbonoLive/CLAUDE.md
