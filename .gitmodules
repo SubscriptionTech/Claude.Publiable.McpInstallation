@@ -2,7 +2,11 @@
 	path = ProAbono.Mcp.Installation
 	url = https://github.com/SubscriptionTech/ProAbono.Mcp.Installation.git
 	branch = main
+# Optional: this repository is public, that one is private. `update = none` makes
+# `git clone --recurse-submodules` skip it, so the documented clone works for everyone.
+# Fetch it deliberately with: git submodule update --init shared/ProAbonoLive
 [submodule "shared/ProAbonoLive"]
 	path = shared/ProAbonoLive
 	url = https://github.com/SubscriptionTech/Claude.SharedApi.ProAbonoLive
 	branch = main
+	update = none
