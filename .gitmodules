@@ -2,3 +2,7 @@
 	path = ProAbono.Mcp.Installation
 	url = https://github.com/SubscriptionTech/ProAbono.Mcp.Installation.git
 	branch = main
+[submodule "shared/ProAbonoLive"]
+	path = shared/ProAbonoLive
+	url = https://github.com/SubscriptionTech/Claude.SharedApi.ProAbonoLive
+	branch = main

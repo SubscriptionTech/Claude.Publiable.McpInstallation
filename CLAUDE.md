@@ -12,6 +12,15 @@ The published package lives in the `ProAbono.Mcp.Installation/` submodule — th
 
 The submodule carries its own `CLAUDE.md`, repeating the rules a session opened on that folder alone would otherwise not have. A rule that binds the code must be changed in both.
 
+## Shared utilities
+
+Read the following files for context before answering questions about this project:
+- shared/ProAbonoLive/CLAUDE.md
+
+`shared/` holds utilities shared with other projects, attached by `pa-shared-add` and maintained with the other `pa-shared-*` commands. `ProAbono.Mcp.Installation/` is a submodule too but not a shared one: it belongs to this project alone, and those commands do not apply to it.
+
+`shared/ProAbonoLive` is **not** a build input. The API contract and the documentation corpus are vendored under `ProAbono.Mcp.Installation/resources/`, so the package builds without it — a clone that skips this submodule still builds, tests and publishes. It is attached to have the upstream at hand when the vendored contract is refreshed.
+
 ## Memory
 
 `.claude/memory/MEMORY.md` holds the rules for this project. Read that index at the start of a session, and a memory file when its line looks relevant to the task.
@@ -80,7 +89,7 @@ Never number two lists `1, 2, 3…` in the same answer: a reference like **done-
 
 What the submodule holds under `ProAbono.Mcp.Installation/resources/` is not a spec either: it is the two inputs the build vendors into `dist/resources/` — the ProAbono API Live contract and the installation documentation corpus. They are public because they ship inside the published package.
 
-This project has no shared utility attached: there is no `shared/` folder. `ProAbono.Mcp.Installation/` is a submodule but not a shared one — it belongs to this project alone, and the `pa-shared-*` commands do not apply to it. Nothing outside these two repositories is needed to build the package.
+The shared utility attached under `shared/` is described in [Shared utilities](#shared-utilities). Nothing outside `ProAbono.Mcp.Installation/` is needed to build the package: both build inputs are vendored there.
 
 ### Language
 
