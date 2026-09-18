@@ -118,7 +118,7 @@ A clone builds the same way, with no credential and no access to anything of our
 npm ci && npm run build && npm test
 ```
 
-Both sources the build vendors live in this repository: the API contract in `specs/open-api/` and the documentation corpus in `specs/mcp-installation-docs/`. The contract is a copy of the one ProAbono maintains internally, refreshed by hand — see `specs/open-api/index.md`.
+Both sources the build vendors live in this repository, under `resources/`: the API contract in `resources/open-api/` and the documentation corpus in `resources/docs/`. The contract is a copy of the one ProAbono maintains internally, refreshed by hand — see `resources/open-api/index.md`.
 
 ## Support
 

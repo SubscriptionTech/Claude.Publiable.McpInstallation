@@ -1,7 +1,7 @@
 /**
  * Access to the two sources of truth, as vendored into `dist/resources` by the build.
  *
- * Nothing else in the server may read `specs/` directly: that folder does not
+ * Nothing else in the server may read `resources/` directly: that folder does not
  * exist in the published package.
  */
 import { readFileSync, readdirSync } from "node:fs";

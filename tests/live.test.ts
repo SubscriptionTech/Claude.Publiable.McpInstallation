@@ -2,7 +2,8 @@
  * The live lane: the journey of steps 4 and 5 against a real ProAbono account.
  *
  * It runs only when the seven variables are present in the environment, and it expects the
- * fixture account described in `specs/Spec-test-account.md`: a Business used for nothing else,
+ * fixture account described in Spec-test-account.md, in the internal specs repository: a Business
+ * used for nothing else,
  * a Segment pool, three Features (one per type), and at least one Offer carrying a Feature.
  *
  * It ends on the default-Segment tripwire. `ReferenceSegment` is optional on every operation, so
@@ -50,7 +51,7 @@ live("live journey against the fixture account", () => {
     assert.ok(
       usable?.ReferenceOffer !== undefined,
       "The fixture account must expose at least one Offer carrying at least one Feature. " +
-        "Offers and Features are authored in the BackOffice; see specs/Spec-test-account.md.",
+        "Offers and Features are authored in the BackOffice; see Spec-test-account.md in the internal specs.",
     );
     offerRef = usable.ReferenceOffer;
 

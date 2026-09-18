@@ -21,7 +21,7 @@ refresh.
 When the API Live changes, copy the file over from the upstream repository and rebuild:
 
 ```bash
-cp <path-to>/Claude.SharedApi.ProAbonoLive/open-api/pa-live-openapi-3.0.3.yaml specs/open-api/
+cp <path-to>/Claude.SharedApi.ProAbonoLive/open-api/pa-live-openapi-3.0.3.yaml resources/open-api/
 npm run build && npm test
 ```
 
@@ -32,6 +32,6 @@ contract on its own, with the upstream commit it was taken from in the message.
 ## What it does not carry
 
 The upstream repository also holds the resource documentation, the enum reference and the
-conventions that explain the contract — `specs/convention.md`, `specs/resources-index.md` and the
+conventions that explain the contract — its `specs/convention.md`, its `specs/resources-index.md` and its
 `resources/` folder. They are not copied here. When a question needs them rather than the schema,
 read them upstream; do not guess from the YAML alone.

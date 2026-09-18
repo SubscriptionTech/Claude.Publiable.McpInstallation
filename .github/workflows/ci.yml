@@ -5,7 +5,7 @@
 # request from a fork.
 #
 # The job needs no credential of its own. Both sources the build vendors -- the API Live contract
-# and the documentation corpus -- are committed under specs/, so a fork's pull request builds like
+# and the documentation corpus -- are committed under resources/, so a fork's pull request builds like
 # any other run.
 name: CI
 

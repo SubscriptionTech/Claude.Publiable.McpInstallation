@@ -12,8 +12,8 @@
 
 Only two sources are authoritative when building or changing the MCP server. Read them before writing code, and never infer ProAbono behaviour from memory, from the web, or from older specs.
 
-1. `specs/open-api/` — the ProAbono API Live contract (`pa-live-openapi-3.0.3.yaml`). Authoritative for endpoints, parameters, payloads, response shapes and authentication. It is a copy of the contract maintained in the private `Claude.SharedApi.ProAbonoLive` repository, refreshed by hand and never edited here — see [specs/open-api/index.md](specs/open-api/index.md).
-2. `specs/mcp-installation-docs/` — the ProAbono installation documentation. Authoritative for the installation procedure, integration workflows and the guidance the MCP exposes to developers.
+1. `resources/open-api/` — the ProAbono API Live contract (`pa-live-openapi-3.0.3.yaml`). Authoritative for endpoints, parameters, payloads, response shapes and authentication. It is a copy of the contract maintained in the private `Claude.SharedApi.ProAbonoLive` repository, refreshed by hand and never edited here — see [resources/open-api/index.md](resources/open-api/index.md).
+2. `resources/docs/` — the ProAbono installation documentation. Authoritative for the installation procedure, integration workflows and the guidance the MCP exposes to developers.
 
 If the two disagree, or if something needed is in neither, ask the user instead of guessing.
 
@@ -25,7 +25,7 @@ Never read, edit, create, or search a file in the `notes/` folder on Claude's ow
 
 ### Backlog
 
-The specs can hold a `backlog` folder, gathering the features and improvements that are deferred to a later version. Its `CLAUDE.md` file carries the rules and is read before creating, updating, or implementing a backlog.
+Deferred features and improvements live in `specs/backlog/` in the internal specs repository, not here. Its `CLAUDE.md` carries the rules.
 
 ### Todo files
 
@@ -68,7 +68,11 @@ Never number two lists `1, 2, 3…` in the same answer: a reference like **done-
 
 ### Specs
 
-The specs are the documents in the root `specs/` folder of this project. This project has no shared utility attached: there is no `shared/` folder, and nothing outside this repository is needed to build it.
+**This repository holds no specification.** The product specs, the build plans and the backlog are private, in [Claude.Internal.McpInstallation](https://github.com/SubscriptionTech/Claude.Internal.McpInstallation). Read them there before changing what a tool does, what it is named, or what it returns — the spec is the source of truth about the product, and this repository is its implementation.
+
+What this repository does hold under `resources/` is not a spec: it is the two inputs the build vendors into `dist/resources/` — the ProAbono API Live contract and the installation documentation corpus. They are public because they ship inside the published package.
+
+This project has no shared utility attached: there is no `shared/` folder, and nothing outside this repository is needed to build it.
 
 ### Language
 
