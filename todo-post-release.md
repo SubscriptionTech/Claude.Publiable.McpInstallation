@@ -48,40 +48,47 @@ Everything below is a follow-up. None of it is broken, and none of it blocks a u
 
 ---
 
-## todo-1 — Record how to release, where it will be read
+## ~~todo-1 — Record how to release, where it will be read~~
 
-Two facts cost an hour during the `0.1.0` release and currently survive only in a git commit message
-(`0aab059` on the parent), which is not where anyone will look next time:
+~~Two facts cost an hour during the `0.1.0` release and currently survive only in a git commit message~~
+~~(`0aab059` on the parent), which is not where anyone will look next time:~~
 
-1. **`mcp-publisher login dns --private-key` takes the key in hex.** The tool's own help says
-   `Private key (hex)`; its documented example line, `--private-key <key>`, does not. Passing the
-   base64 form fails with
-   `Error: invalid hex private key format: encoding/hex: invalid byte: U+004D 'M'` — `M` is not a hex
-   digit. The error names the encoding, not the fix.
-2. **The key is stored as a PKCS8 PEM**, at `~/.proabono/mcp-registry/key.pem` on the publishing
-   machine. This converts and logs in without the key ever reaching the terminal or the shell
-   history:
+~~1. **`mcp-publisher login dns --private-key` takes the key in hex.** The tool's own help says~~
+~~`Private key (hex)`; its documented example line, `--private-key <key>`, does not. Passing the~~
+~~base64 form fails with~~
+~~`Error: invalid hex private key format: encoding/hex: invalid byte: U+004D 'M'` — `M` is not a hex~~
+~~digit. The error names the encoding, not the fix.~~
+~~2. **The key is stored as a PKCS8 PEM** on the publishing machine. Converting and logging in without~~
+~~the key ever reaching the terminal or the shell history.~~
 
-   ```bash
-   mcp-publisher login dns --domain proabono.com --private-key "$(node -e 'const c=require("crypto"),fs=require("fs");process.stdout.write(c.createPrivateKey(fs.readFileSync("<path-to>/key.pem")).export({format:"der",type:"pkcs8"}).subarray(-32).toString("hex"))')"
-   ```
+~~Where should this live? Options:~~
 
-   The derived public key must equal the `p=` value in the apex TXT record of `proabono.com`,
-   currently `v=MCPv1; k=ed25519; p=s8Q3jYzTLX2RPqBgpMppOmdKOsZl2zPbOvB+TIPFiCE=`. That record is the
-   only MCP record on the apex; there is no stale duplicate to remove.
+~~1. **A `## Releasing` section in the submodule's `CLAUDE.md`.**~~
+~~2. **A `RELEASING.md` in the submodule**, linked from `CONTRIBUTING.md`.~~
+~~3. **In `CONTRIBUTING.md` itself**.~~
 
-Where should this live? Options:
+~~Whichever is chosen: no key, no token and no secret value goes in it.~~
 
-1. **A `## Releasing` section in the submodule's `CLAUDE.md`.** Read by any session working on the
-   package, and the file already carries a *Release identity* section this would sit next to.
-   Drawback: `CLAUDE.md` is instructions for Claude, and this is partly a human runbook.
-2. **A `RELEASING.md` in the submodule**, linked from `CONTRIBUTING.md`. A conventional place for a
-   human to look, and it can hold the whole sequence — bump, tag, registry, verify.
-3. **In `CONTRIBUTING.md` itself**, which already says not to bump the version as part of a change.
-   Cheapest, but that file is addressed to outside contributors, and releasing is not their job.
+**Settled 2026-09-18, option 2.** `RELEASING.md` added to the submodule (commit `e080884`), linked
+from `CLAUDE.md`'s *Release identity* section and from `CONTRIBUTING.md`'s *Pull requests* bullet, so
+neither a Claude session nor an outside contributor reaches the version rules without seeing it.
 
-Whichever is chosen: no key, no token and no secret value goes in it. Only the variable names, the
-file path and the commands.
+It holds the whole sequence: the four files that must agree, `npm version --no-git-tag-version`, the
+tag as the trigger, what the workflow does step by step, what a failure before and after the publish
+step costs, the registry publish, the verification of all three surfaces, and the submodule-pointer
+bump afterwards.
+
+The hex-versus-base64 trap is recorded there with the verbatim error, along with a one-liner that
+converts the PEM and logs in in one step, and a second that derives the public key so a key can be
+checked against DNS before use. **Both were run against the real key file before being written down**:
+the derived public key matched `s8Q3jYzTLX2RPqBgpMppOmdKOsZl2zPbOvB+TIPFiCE=` exactly, and the seed is
+64 hex characters.
+
+One deliberate change from what this section proposed: the runbook takes the key path as a command
+argument (`/path/to/your/key.pem`) instead of naming the real one. Both repositories are public, and
+publishing where the signing key sits on a machine is free intelligence for anyone who later gets a
+foothold. The generic half of the lesson loses nothing by it. The real path, the npm token and its
+expiry belong in the password manager, which the runbook says explicitly.
 
 ---
 
