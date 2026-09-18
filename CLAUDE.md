@@ -19,7 +19,7 @@ Read the following files for context before answering questions about this proje
 
 `shared/` holds utilities shared with other projects, attached by `pa-shared-add` and maintained with the other `pa-shared-*` commands. `ProAbono.Mcp.Installation/` is a submodule too but not a shared one: it belongs to this project alone, and those commands do not apply to it.
 
-`shared/ProAbonoLive` is **not** a build input. The API contract and the documentation corpus are vendored under `ProAbono.Mcp.Installation/resources/`, so the package builds without it — a clone that skips this submodule still builds, tests and publishes. It is attached to have the upstream at hand when the vendored contract is refreshed.
+`shared/ProAbonoLive` holds the API Live contract, and is source of truth number 1 above. The build copies the contract out of it before every run, but does not require it: the copy under `ProAbono.Mcp.Installation/resources/open-api/` is committed, so a clone that skips this submodule still builds, tests and publishes — which is what CI and every outside contributor do.
 
 ## Memory
 
@@ -29,8 +29,12 @@ Read the following files for context before answering questions about this proje
 
 Only two sources are authoritative when building or changing the MCP server. Read them before writing code, and never infer ProAbono behaviour from memory, from the web, or from older specs.
 
-1. `ProAbono.Mcp.Installation/resources/open-api/` — the ProAbono API Live contract (`pa-live-openapi-3.0.3.yaml`). Authoritative for endpoints, parameters, payloads, response shapes and authentication. It is a copy of the contract maintained in the private `Claude.SharedApi.ProAbonoLive` repository, refreshed by hand and never edited here — see [ProAbono.Mcp.Installation/resources/open-api/index.md](ProAbono.Mcp.Installation/resources/open-api/index.md).
-2. `ProAbono.Mcp.Installation/resources/docs/` — the ProAbono installation documentation. Authoritative for the installation procedure, integration workflows and the guidance the MCP exposes to developers.
+1. `shared/ProAbonoLive/open-api/pa-live-openapi-3.0.3.yaml` — the ProAbono API Live contract. Authoritative for endpoints, parameters, payloads, response shapes and authentication. It is authored here, and a change to the contract is made here.
+
+   `ProAbono.Mcp.Installation/resources/open-api/pa-live-openapi-3.0.3.yaml` is **derived from it**, not a second source: `npm run build` and `npm test` copy it over before every run. Never edit that copy — the next build overwrites it. See [ProAbono.Mcp.Installation/resources/open-api/index.md](ProAbono.Mcp.Installation/resources/open-api/index.md).
+
+   The copy is committed on purpose, and is the only contract available where `shared/ProAbonoLive` is not: CI, and any clone of the package repository on its own. That is what lets the package build with no credential.
+2. `ProAbono.Mcp.Installation/resources/docs/` — the ProAbono installation documentation. Authoritative for the installation procedure, integration workflows and the guidance the MCP exposes to developers. It is authored in the package repository and has no upstream.
 
 If the two disagree, or if something needed is in neither, ask the user instead of guessing.
 
