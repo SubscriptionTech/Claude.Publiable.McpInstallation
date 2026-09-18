@@ -233,17 +233,29 @@ week, force an evaluation from **Insights → Dependency graph → Dependabot �
 
 ---
 
-## todo-6 — Dependabot pull requests #1 and #2, which are green
+## ~~todo-6 — Dependabot pull requests #1 and #2, which are green~~
 
-`#1` bumps `actions/setup-node` from 4 to 7 and `#2` bumps `actions/checkout` from 4 to 7. CI passes
-on both.
+~~`#1` bumps `actions/setup-node` from 4 to 7 and `#2` bumps `actions/checkout` from 4 to 7. CI passes~~
+~~on both.~~
 
-Both actions are named in the provenance attestation the release workflow produces. Merging them
-**before** `todo-2` is fine; merging them while a release is in flight is not, because the attestation
-would then describe a workflow different from the one that was reviewed.
+~~Both actions are named in the provenance attestation the release workflow produces. Merging them~~
+~~**before** `todo-2` is fine; merging them while a release is in flight is not, because the attestation~~
+~~would then describe a workflow different from the one that was reviewed.~~
 
-Decide: merge both now, before the tag — or leave them until after `todo-4` and merge them into a
-quiet tree.
+~~Decide: merge both now, before the tag — or leave them until after `todo-4` and merge them into a~~
+~~quiet tree.~~
+
+**Settled 2026-09-18.** Both merged into a quiet tree, after `0.1.0` shipped: `#2` (checkout) as
+`37a56e8`, then `#1` (setup-node) as `dea9ac5`. CI is green on `main` for 20.x, 22.x and 24.x, and
+GitHub's *"target Node.js 20 but are being forced to run on Node.js 24"* warning is gone.
+
+Both `ci.yml` and `release.yml` are on `actions/checkout@v7` and `actions/setup-node@v7`.
+
+**One thing this did not prove.** CI runs `ci.yml` on every push, so v7 is verified there. `release.yml`
+only ever runs on a `v*` tag, and it uses `setup-node` differently — it passes `registry-url`, which
+writes the `.npmrc` that `NODE_AUTH_TOKEN` feeds, and it relies on `id-token: write` for provenance.
+Neither is exercised by CI. **The next release is the first proof that the release path still works
+under v7.** If it fails there, it fails before anything is uploaded and the version is not spent.
 
 ---
 
