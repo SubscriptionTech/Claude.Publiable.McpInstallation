@@ -50,27 +50,33 @@ tag against `package.json` and fails the run before anything is uploaded if they
 
 ---
 
-## todo-1 — The npm token, and the publishing setting
+## ~~todo-1 — The npm token, and the publishing setting~~
 
-The release workflow authenticates to npm through `NODE_AUTH_TOKEN`, fed by a repository secret named
-`NPM_TOKEN`. That secret does not exist yet, and nothing can be published until it does.
+~~The release workflow authenticates to npm through `NODE_AUTH_TOKEN`, fed by a repository secret named~~
+~~`NPM_TOKEN`. That secret does not exist yet, and nothing can be published until it does.~~
 
-On npmjs.com, create a **granular access token** scoped to `@proabono/mcp-installation` with read and
-write permission, then store it as the `NPM_TOKEN` secret of
-`SubscriptionTech/ProAbono.Mcp.Installation`.
+~~On npmjs.com, create a **granular access token** scoped to `@proabono/mcp-installation` with read and~~
+~~write permission, then store it as the `NPM_TOKEN` secret of~~
+~~`SubscriptionTech/ProAbono.Mcp.Installation`.~~
 
-Two things to settle while there:
+~~Two things to settle while there:~~
 
-1. **The package's publishing setting.** If the package demands two-factor authentication on every
-   publish, a token-driven CI publish is **refused**. The setting must allow automation tokens.
-2. **Scope and expiry.** The token is long-lived and lives on a public repository. Give it the
-   narrowest scope npm offers and an expiry date, and record where it is kept so it can be rotated.
+~~1. **The package's publishing setting.** If the package demands two-factor authentication on every~~
+~~publish, a token-driven CI publish is **refused**. The setting must allow automation tokens.~~
+~~2. **Scope and expiry.** The token is long-lived and lives on a public repository. Give it the~~
+~~narrowest scope npm offers and an expiry date, and record where it is kept so it can be rotated.~~
 
-Trusted publishing was considered and rejected for this release: provenance does not depend on it. The
-attestation comes from the workflow's `id-token: write` permission, which is already in
-`.github/workflows/release.yml`, not from how the publish authenticates.
+~~Trusted publishing was considered and rejected for this release: provenance does not depend on it. The~~
+~~attestation comes from the workflow's `id-token: write` permission, which is already in~~
+~~`.github/workflows/release.yml`, not from how the publish authenticates.~~
 
-Nothing else depends on this but everything after it does.
+~~Nothing else depends on this but everything after it does.~~
+
+**Settled 2026-09-18.** The `NPM_TOKEN` secret exists on `SubscriptionTech/ProAbono.Mcp.Installation`,
+confirmed by `gh secret list`. The package's npm publishing setting was **not** verified from here — it
+needs npm authentication this project does not hold. If it disallows automation tokens, the release
+run fails at the publish step with an authentication error and uploads nothing, so the version is not
+spent: fix the setting and re-run the failed job.
 
 ---
 
