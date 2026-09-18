@@ -92,30 +92,55 @@ expiry belong in the password manager, which the runbook says explicitly.
 
 ---
 
-## todo-2 — `release.yml` is unexercised under the v7 actions
+## ~~todo-2 — `release.yml` is unexercised under the v7 actions~~
 
-`actions/checkout` and `actions/setup-node` were bumped from 4 to 7 after the release, in
-`37a56e8` and `dea9ac5`. CI is green — but CI only runs `ci.yml`.
+~~`actions/checkout` and `actions/setup-node` were bumped from 4 to 7 after the release, in~~
+~~`37a56e8` and `dea9ac5`. CI is green — but CI only runs `ci.yml`.~~
 
-`release.yml` uses `setup-node` differently: it passes `registry-url`, which writes the `.npmrc` that
-`NODE_AUTH_TOKEN` feeds, and it relies on `id-token: write` for the provenance attestation. Neither
-is exercised by any push. **The next release is the first proof the release path still works under
-v7.**
+~~`release.yml` uses `setup-node` differently: it passes `registry-url`, which writes the `.npmrc` that~~
+~~`NODE_AUTH_TOKEN` feeds, and it relies on `id-token: write` for the provenance attestation. Neither~~
+~~is exercised by any push. **The next release is the first proof the release path still works under~~
+~~v7.**~~
 
-The consequence is bounded: a failure there happens before npm accepts a tarball, so the version is
-not spent and the failed job can be re-run. But it is discovered at the worst moment, when a release
-is what you actually wanted.
+~~The consequence is bounded: a failure there happens before npm accepts a tarball, so the version is~~
+~~not spent and the failed job can be re-run. But it is discovered at the worst moment, when a release~~
+~~is what you actually wanted.~~
 
-Options:
+~~Options:~~
 
-1. **Accept it.** Do nothing; find out at the next release, and re-run the job if it breaks.
-2. **Add a `workflow_dispatch` trigger to `release.yml`** with a guard so a manual run performs every
-   step up to and including `npm publish --dry-run` but never a real publish. The release path
-   becomes testable on demand, at the cost of a conditional in the workflow that must itself be
-   right — a mistake there is the one failure mode that could spend a version by accident.
-3. **Extend CI instead**, adding a job that runs `setup-node` with the same `registry-url` and asserts
-   the `.npmrc` was written. Narrower than option 2 and it cannot publish anything, but it does not
-   cover the provenance half at all.
+~~1. **Accept it.** Do nothing; find out at the next release, and re-run the job if it breaks.~~
+~~2. **Add a `workflow_dispatch` trigger to `release.yml`** with a guard so a manual run performs every~~
+~~step up to and including `npm publish --dry-run` but never a real publish.~~
+~~3. **Extend CI instead**, adding a job that runs `setup-node` with the same `registry-url` and asserts~~
+~~the `.npmrc` was written.~~
+
+**Settled 2026-09-18, option 3 plus a token check** (commit `6548b64`):
+
+- **`ci.yml` gained a `release path` job.** It runs `actions/setup-node@v7` with the same
+  `registry-url: https://registry.npmjs.org` that `release.yml` uses, then asserts the user `.npmrc`
+  exists, carries an `_authToken` line, and that `npm config get registry` resolves to npmjs. It
+  needs **no credential** — with `NODE_AUTH_TOKEN` unset the file is still written, with the
+  placeholder — so it runs on a fork's pull request like any other job. It is **green**, which is
+  itself the proof that `setup-node@v7` has not changed that behaviour.
+- **`release.yml` gained an `npm whoami` step** before `npm ci`. A token that has expired, been
+  revoked or been scoped too narrowly now fails in seconds instead of after typecheck, build and
+  test.
+
+Two corrections to the section above, established while settling it:
+
+1. **`npm publish --dry-run` does not authenticate.** It reports what would be uploaded without
+   contacting the registry, so option 2 would have gone green against a dead token — the wrong
+   instrument for the risk. That is why `npm whoami` was used instead.
+2. **Nothing short of a real publish exercises provenance.** The attestation is minted during the
+   upload. No option covered it, and none of them could have.
+
+Also fixed in passing: `ci.yml`'s header comment referred to "publication plan, Phase C", a plan file
+that no longer exists. It now points at `RELEASING.md`.
+
+**What remains uncovered**, deliberately: the provenance attestation and `gh release create` are
+still first exercised by a real release. Both fail *after* npm accepts the tarball, so neither can
+cost a version — a missing attestation is a defect to fix in the next release, and a missing GitHub
+release object is created by hand.
 
 ---
 
