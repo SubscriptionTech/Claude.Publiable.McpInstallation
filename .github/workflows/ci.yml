@@ -23,8 +23,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          # The API contract is vendored into the build from this submodule.
+          # The API contract is vendored into the build from this submodule, which lives in a
+          # private repository. The default GITHUB_TOKEN is scoped to this repository alone and
+          # cannot read it, so checkout needs a credential that can. Without it the job fails at
+          # clone time with "Repository not found".
+          #
+          # A pull request from a fork receives no secret, so its run fails here. That is
+          # accepted: the submodule stays private and forks cannot build.
           submodules: true
+          token: ${{ secrets.SHARED_SUBMODULE_TOKEN || github.token }}
 
       - uses: actions/setup-node@v4
         with:

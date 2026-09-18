@@ -1,0 +1,74 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "com.proabono/mcp-installation",
+  "description": "Installs ProAbono into a website from the IDE: hosted pages, catalogue, customers, subscriptions.",
+  "version": "0.0.1",
+  "websiteUrl": "https://www.proabono.com",
+  "repository": {
+    "url": "https://github.com/SubscriptionTech/Claude.Publiable.McpInstallation",
+    "source": "github",
+    "id": "1366000436"
+  },
+  "packages": [
+    {
+      "registryType": "npm",
+      "registryBaseUrl": "https://registry.npmjs.org",
+      "identifier": "@proabono/mcp-installation",
+      "version": "0.0.1",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "name": "PROABONO_API_BASE",
+          "description": "The API endpoint, https://api-{business_id}.proabono.com",
+          "isRequired": true,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "PROABONO_BUSINESS_ID",
+          "description": "Your numeric business identifier",
+          "isRequired": true,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "PROABONO_SEGMENT_REF",
+          "description": "The Segment your customers and offers belong to",
+          "isRequired": true,
+          "isSecret": false,
+          "format": "string"
+        },
+        {
+          "name": "PROABONO_AGENT_KEY",
+          "description": "Basic auth username",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "PROABONO_API_KEY",
+          "description": "Basic auth password",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "PROABONO_PORTAL_SECRET",
+          "description": "HMAC key for the portal security hash",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        },
+        {
+          "name": "PROABONO_WEBHOOK_SECRET",
+          "description": "Secret for the notification signature",
+          "isRequired": true,
+          "isSecret": true,
+          "format": "string"
+        }
+      ]
+    }
+  ]
+}
