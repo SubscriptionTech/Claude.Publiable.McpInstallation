@@ -195,31 +195,41 @@ This file is deleted once `todo-5`, `todo-6` and `todo-7` are settled too.
 
 ---
 
-## todo-5 — Dependabot pull request #3, which is red
+## ~~todo-5 — Dependabot pull request #3, which is red~~
 
-`.github/dependabot.yml` groups development dependencies into a single pull request, so the
-bump of `@types/node` 24.13.5 → 26.5.1 travels together with **typescript 5.9.3 → 7.0.2**, a major
-version. TypeScript 7 stops resolving `@types/node` under the repository's current `tsconfig.json`,
-and `npm run typecheck` collapses — on Node 20.x it reports, among roughly twenty errors of the same
-shape:
+~~`.github/dependabot.yml` groups development dependencies into a single pull request, so the~~
+~~bump of `@types/node` 24.13.5 → 26.5.1 travels together with **typescript 5.9.3 → 7.0.2**, a major~~
+~~version. TypeScript 7 stops resolving `@types/node` under the repository's current `tsconfig.json`,~~
+~~and `npm run typecheck` collapses — on Node 20.x it reports, among roughly twenty errors of the same~~
+~~shape:~~
 
-```
-src/config.ts(54,20): error TS2503: Cannot find namespace 'NodeJS'.
-src/api/client.ts(39,48): error TS2304: Cannot find name 'fetch'.
-src/api/client.ts(49,35): error TS2591: Cannot find name 'Buffer'.
-src/corpus/index.ts(35,67): error TS2339: Property 'url' does not exist on type 'ImportMeta'.
-```
+~~`src/config.ts(54,20): error TS2503: Cannot find namespace 'NodeJS'.`~~
+~~`src/api/client.ts(39,48): error TS2304: Cannot find name 'fetch'.`~~
+~~`src/api/client.ts(49,35): error TS2591: Cannot find name 'Buffer'.`~~
+~~`src/corpus/index.ts(35,67): error TS2339: Property 'url' does not exist on type 'ImportMeta'.`~~
 
-**Do not merge it.** Two options:
+~~**Do not merge it.** Two options:~~
 
-1. **Close #3 and add an `ignore` for `typescript` major bumps** in `.github/dependabot.yml`, so the
-   two stop travelling together and `@types/node` can move on its own. Cheapest, and it keeps the
-   group useful.
-2. **Take the TypeScript 7 migration deliberately**, as its own piece of work, adjusting
-   `tsconfig.json` until the typecheck passes on all three Node versions. Larger, and it has nothing
-   to do with the split.
+~~1. **Close #3 and add an `ignore` for `typescript` major bumps** in `.github/dependabot.yml`, so the~~
+~~two stop travelling together and `@types/node` can move on its own. Cheapest, and it keeps the~~
+~~group useful.~~
+~~2. **Take the TypeScript 7 migration deliberately**, as its own piece of work, adjusting~~
+~~`tsconfig.json` until the typecheck passes on all three Node versions. Larger, and it has nothing~~
+~~to do with the split.~~
 
-Option 1 unless the TypeScript 7 move is wanted now.
+~~Option 1 unless the TypeScript 7 move is wanted now.~~
+
+**Settled 2026-09-18, option 1.** `.github/dependabot.yml` now ignores TypeScript **major** bumps
+(commit `b6ebaef`). It also corrects one detail of the section above: the typecheck failed on **all
+three** Node versions, 20.x, 22.x and 24.x — not only 20.x.
+
+Dependabot closed #3 by itself twelve seconds after the config was pushed, with *"Looks like these
+dependencies are no longer being updated by Dependabot, so this is no longer needed."* The reasoning
+is recorded as a comment on the closed pull request.
+
+`@types/node` 24 → 26 is itself a major, and it is **not** ignored — only `typescript` is. Dependabot
+should therefore re-propose it alone at the next weekly run. If no such pull request appears within a
+week, force an evaluation from **Insights → Dependency graph → Dependabot → Check for updates**.
 
 ---
 
