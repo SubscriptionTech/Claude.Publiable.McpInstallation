@@ -144,24 +144,44 @@ release object is created by hand.
 
 ---
 
-## todo-3 — The pending `@types/node` bump
+## ~~todo-3 — The pending `@types/node` bump~~
 
-Dependabot PR #3 bundled `@types/node` 24.13.5 → 26.5.1 with `typescript` 5.9.3 → 7.0.2. TypeScript 7
-(the typescript-go rewrite) stops resolving `@types/node` under the repository's `tsconfig.json`, and
-`npm run typecheck` failed on 20.x, 22.x and 24.x alike — around twenty errors of the shape
-`TS2503: Cannot find namespace 'NodeJS'` and `TS2304: Cannot find name 'fetch'`.
+~~Dependabot PR #3 bundled `@types/node` 24.13.5 → 26.5.1 with `typescript` 5.9.3 → 7.0.2. TypeScript 7~~
+~~(the typescript-go rewrite) stops resolving `@types/node` under the repository's `tsconfig.json`, and~~
+~~`npm run typecheck` failed on 20.x, 22.x and 24.x alike — around twenty errors of the shape~~
+~~`TS2503: Cannot find namespace 'NodeJS'` and `TS2304: Cannot find name 'fetch'`.~~
 
-`.github/dependabot.yml` now ignores `typescript` major bumps (`b6ebaef`), and Dependabot closed #3
-by itself. `@types/node` 24 → 26 is **also** a major, but it is **not** ignored — only `typescript`
-is — so Dependabot should re-propose it on its own at the next weekly run.
+~~`.github/dependabot.yml` now ignores `typescript` major bumps (`b6ebaef`), and Dependabot closed #3~~
+~~by itself. `@types/node` 24 → 26 is **also** a major, but it is **not** ignored — only `typescript`~~
+~~is — so Dependabot should re-propose it on its own at the next weekly run.~~
 
-Check whether that pull request appeared. If nothing has by 2026-09-25, force an evaluation from
-**Insights → Dependency graph → Dependabot → Check for updates** on
-`SubscriptionTech/ProAbono.Mcp.Installation`.
+~~Check whether that pull request appeared. If nothing has by 2026-09-25, force an evaluation from~~
+~~**Insights → Dependency graph → Dependabot → Check for updates** on~~
+~~`SubscriptionTech/ProAbono.Mcp.Installation`.~~
 
-When it appears, it is an ordinary review: green CI on all three Node versions means merge. If it
-comes back red, the interesting question is whether `@types/node` 26 alone breaks the build, or only
-did so in combination with TypeScript 7 — that changes whether the ignore rule was the right fix.
+~~When it appears, it is an ordinary review: green CI on all three Node versions means merge. If it~~
+~~comes back red, the interesting question is whether `@types/node` 26 alone breaks the build, or only~~
+~~did so in combination with TypeScript 7 — that changes whether the ignore rule was the right fix.~~
+
+**Settled 2026-09-18.** Dependabot re-proposed it within the hour rather than at the next weekly run:
+PR **#4**, `@types/node` alone, green on 20.x, 22.x and 24.x. That answers the question this section
+asked — **`@types/node` 26 on its own does not break the build**, so the failure in #3 came from
+TypeScript 7 and the `ignore` rule was the right fix.
+
+**It was closed rather than merged, for a reason the section did not anticipate.** `package.json`
+declares `engines: { node: ">=20" }` and CI runs 20.x, but the types described Node 26. The
+typechecker would then accept an API that does not exist on the oldest supported runtime — for
+instance `import { glob } from "node:fs/promises"` compiles against `@types/node` 26 and throws at run
+time on Node 20, where `fs.promises.glob` does not exist (it arrived in Node 22). The test suite
+catches that only if a test happens to exercise the path.
+
+So `@types/node` is now pinned to **`^20.0.0`**, the floor `engines` declares, and
+`.github/dependabot.yml` ignores its major bumps alongside `typescript`'s (commit `1030388`).
+Verified before committing and green on CI afterwards: typecheck, build and the 79 tests all pass
+against `@types/node` 20.19.43, and the full matrix plus the `release path` job is green on `main`.
+
+That version now moves only when the supported floor moves — a decision about `engines` and the CI
+matrix, not a dependency bump. The reasoning is also recorded as a comment on the closed PR #4.
 
 ---
 
